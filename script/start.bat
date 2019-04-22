@@ -1,0 +1,2 @@
+socket2serial.exe install
+socket2serial.exe start

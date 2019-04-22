@@ -1,0 +1,2 @@
+socket2serial.exe stop
+socket2serial.exe uninstall
