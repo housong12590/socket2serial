@@ -1,0 +1,27 @@
+<service>
+
+     <id>socket2serial</id>
+
+     <name>socket2serial</name>
+
+     <description>This is socket2serial service.</description>
+
+     <!-- java环境变量 -->
+
+     <env name="JAVA_HOME" value="%JAVA_HOME%"/>
+
+     <executable>java</executable>
+
+    <arguments>-jar "E:\code\java\socket2serial\out\artifacts\socket2serial_jar\socket2serial.jar"</arguments>
+
+     <!-- 开机启动 -->
+
+     <startmode>Automatic</startmode>
+
+     <!-- 日志配置 -->
+
+     <logpath>%BASE%\log</logpath>
+
+     <logmode>rotate</logmode>
+
+ </service>
