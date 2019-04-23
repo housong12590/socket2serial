@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="serial:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/serial_jar</output-path>
+    <root id="archive" name="serial.jar">
+      <element id="module-output" name="serial" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/RXTXcomm.jar" path-in-jar="/" />
+      <element id="library" level="project" name="Maven: gun.io:rxtx:unknown" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.8.0-beta2/slf4j-api-1.8.0-beta2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/log4j/log4j/1.2.17/log4j-1.2.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-log4j12/1.8.0-beta2/slf4j-log4j12-1.8.0-beta2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

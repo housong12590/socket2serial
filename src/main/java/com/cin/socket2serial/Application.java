@@ -1,17 +1,56 @@
 package com.cin.socket2serial;
 
+import com.cin.socket2serial.service.PrinterService;
+import com.cin.socket2serial.service.SocketService;
+
 public class Application {
 
-    public static void main(String[] args) {
+    private ServiceProperty property;
+    private static Application application;
+    private SocketService socketService;
+    private PrinterService printerService;
 
-        while (true) {
-            System.out.println("hello java");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    public static void main(String[] args) {
+        application = new Application();
+        application.initialize();
+        application.run();
+    }
+
+    public static Application get() {
+        return application;
+    }
+
+    private Application() {
+        property = new ServiceProperty();
+
+    }
+
+    private void initialize() {
+        socketService = new SocketService();
+        printerService = new PrinterService();
+    }
+
+    public void reloadConfig(ServiceProperty property) {
+        this.property = property;
+        printerService.reload();
+        property.save();
+    }
+
+    public PrinterService getPrinterService() {
+        return printerService;
+    }
+
+    private void run() {
+        socketService.start();
+        printerService.start();
+    }
+
+    public static ServiceProperty getProperty() {
+        Application application = get();
+        if (application == null) {
+            throw new NullPointerException("Please initialize first application.initialize()");
         }
+        return get().property;
     }
 
 }

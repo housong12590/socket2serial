@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: gun.io:rxtx:unknown">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/gun/io/rxtx/unknown/rxtx-unknown.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/gun/io/rxtx/unknown/rxtx-unknown-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/gun/io/rxtx/unknown/rxtx-unknown-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
