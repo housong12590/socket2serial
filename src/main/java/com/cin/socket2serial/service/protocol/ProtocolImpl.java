@@ -11,7 +11,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 public class ProtocolImpl implements Protocol {
-    private int bufferSize;
     private ByteBuffer buffer;
 
     public ProtocolImpl(int bufferSize) {

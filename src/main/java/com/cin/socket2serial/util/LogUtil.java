@@ -1,6 +1,5 @@
 package com.cin.socket2serial.util;
 
-import com.cin.socket2serial.Application;
 import com.cin.socket2serial.ServiceProperty;
 
 import org.slf4j.Logger;
@@ -8,15 +7,13 @@ import org.slf4j.LoggerFactory;
 
 public class LogUtil {
 
-    static Logger logger = LoggerFactory.getLogger("printservice");
+    private static Logger logger = LoggerFactory.getLogger("printservice");
+    private static boolean debug;
 
-    static boolean debug;
 
     static {
-        ServiceProperty property = Application.getProperty();
-        if (property != null) {
-            debug = property.isDebug();
-        }
+        ServiceProperty property = new ServiceProperty();
+        debug = property.isDebug();
     }
 
     public static void debug(String msg) {

@@ -59,6 +59,8 @@ public class SocketService implements Runnable {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
+                            key.channel().close();
+                            key.cancel();
                         } finally {
                             keys.remove();
                         }

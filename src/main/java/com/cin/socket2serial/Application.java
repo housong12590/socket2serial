@@ -2,6 +2,7 @@ package com.cin.socket2serial;
 
 import com.cin.socket2serial.service.PrinterService;
 import com.cin.socket2serial.service.SocketService;
+import com.cin.socket2serial.util.LogUtil;
 
 public class Application {
 
@@ -22,7 +23,7 @@ public class Application {
 
     private Application() {
         property = new ServiceProperty();
-
+        LogUtil.debug("加载配置: " + property.toString());
     }
 
     private void initialize() {
