@@ -26,25 +26,16 @@ public class ProtocolImpl implements Protocol {
 
     public void handleRead(SelectionKey key) throws IOException {
         SocketChannel channel = (SocketChannel) key.channel();
-        //得到并清空缓冲区
         buffer.clear();
-        //读取信息获得读取的字节数
-        long bytesRead = channel.read(buffer);
-
-        if (bytesRead == -1) {
-            //没有读取到内容
-            channel.close();
-        } else {
-            //将缓冲区准备为数据传出状态
+        while ((channel.read(buffer)) != -1) {
             buffer.flip();
             byte[] data = new byte[buffer.remaining()];
             buffer.get(data);
             buffer.clear();
             LogUtil.debug(String.format("client : %s 发送了长度为%s的数据", channel.socket().getRemoteSocketAddress(), data.length));
             sendToSerial(data);
-            //为下一次读取或写入做准备
-            key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
         }
+        key.interestOps(SelectionKey.OP_READ);
     }
 
     public void handleWrite(SelectionKey key) throws IOException {
