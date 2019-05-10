@@ -58,7 +58,7 @@ public class SocketService implements Runnable {
                                 protocol.handleWrite(key);
                             }
                         } catch (IOException e) {
-                            e.printStackTrace();
+//                            e.printStackTrace();
                             key.channel().close();
                             key.cancel();
                         } finally {
@@ -67,7 +67,7 @@ public class SocketService implements Runnable {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
     }

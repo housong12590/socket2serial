@@ -27,15 +27,22 @@ public class ProtocolImpl implements Protocol {
     public void handleRead(SelectionKey key) throws IOException {
         SocketChannel channel = (SocketChannel) key.channel();
         buffer.clear();
-        while ((channel.read(buffer)) != -1) {
-            buffer.flip();
-            byte[] data = new byte[buffer.remaining()];
-            buffer.get(data);
-            buffer.clear();
-            LogUtil.debug(String.format("client : %s 发送了长度为%s的数据", channel.socket().getRemoteSocketAddress(), data.length));
-            sendToSerial(data);
-        }
-        key.interestOps(SelectionKey.OP_READ);
+        int readLen;
+        do {
+            readLen = channel.read(buffer);
+            if (readLen == -1) {
+                channel.close();
+            } else if (readLen > 0) {
+                buffer.flip();
+                byte[] data = new byte[buffer.remaining()];
+                buffer.get(data);
+                buffer.clear();
+//                LogUtil.debug(Arrays.toString(data));
+                LogUtil.debug(String.format("client : %s 发送了长度为%s的数据", channel.socket().getRemoteSocketAddress(), data.length));
+                sendToSerial(data);
+                key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+            }
+        } while (readLen > 0);
     }
 
     public void handleWrite(SelectionKey key) throws IOException {
