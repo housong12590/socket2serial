@@ -37,12 +37,30 @@ public class ProtocolImpl implements Protocol {
                 byte[] data = new byte[buffer.remaining()];
                 buffer.get(data);
                 buffer.clear();
-//                LogUtil.debug(Arrays.toString(data));
                 LogUtil.debug(String.format("client : %s 发送了长度为%s的数据", channel.socket().getRemoteSocketAddress(), data.length));
-                sendToSerial(data);
+                checkDataLengthSplit(data);
                 key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
             }
         } while (readLen > 0);
+    }
+
+    private void checkDataLengthSplit(byte[] bytes) {
+        int childLen = 512;
+        int position = 0;
+        if (bytes.length > childLen) {
+            int count = bytes.length / childLen + (bytes.length % childLen == 0 ? 0 : 1);
+            for (int i = 0; i < count; i++) {
+                if (bytes.length - position < childLen) {
+                    childLen = bytes.length - position;
+                }
+                byte[] new_arr = new byte[childLen];
+                System.arraycopy(bytes, position, new_arr, 0, childLen);
+                sendToSerial(new_arr);
+                position += childLen;
+            }
+        } else {
+            sendToSerial(bytes);
+        }
     }
 
     public void handleWrite(SelectionKey key) throws IOException {
