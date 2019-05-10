@@ -16,7 +16,6 @@ public class SocketService implements Runnable {
 
     private Selector selector;
     private static final int timeOut = 3000;
-    private static final int port = 9100;
     private Protocol protocol;
 
     public void start() {
@@ -27,12 +26,13 @@ public class SocketService implements Runnable {
         try {
             selector = Selector.open();
             ServerSocketChannel serverChannel = ServerSocketChannel.open();
-            serverChannel.socket().bind(new InetSocketAddress(port));
+            int servicePort = Application.getProperty().getServicePort();
+            serverChannel.socket().bind(new InetSocketAddress(servicePort));
             serverChannel.configureBlocking(false);
             serverChannel.register(selector, SelectionKey.OP_ACCEPT);
             int bufferSize = Application.getProperty().getBufferSize();
             protocol = new ProtocolImpl(bufferSize);
-            LogUtil.info(String.format("服务器开启,  监听%s端口...", port));
+            LogUtil.info(String.format("服务器开启,  监听%s端口...", servicePort));
         } catch (IOException e) {
             e.printStackTrace();
         }

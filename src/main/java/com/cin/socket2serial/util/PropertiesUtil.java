@@ -92,7 +92,9 @@ public class PropertiesUtil {
             }
             try {
                 Object val = field.get(object);
-                properties.setProperty(field.getName(), toString(val));
+                if (val != null) {
+                    properties.setProperty(field.getName(), toString(val));
+                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -122,6 +124,6 @@ public class PropertiesUtil {
     }
 
     private static String toString(Object object) {
-        return object == null ? null : object.toString();
+        return object == null ? "" : object.toString();
     }
 }
