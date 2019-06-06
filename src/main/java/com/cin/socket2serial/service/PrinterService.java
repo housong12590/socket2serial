@@ -90,7 +90,7 @@ public class PrinterService implements Runnable {
             openCommPort();
         }
         if (commPort != null) {
-            port.sendData(commPort, data);
+            port.send(commPort, data, 512);
         }
     }
 
