@@ -5,23 +5,24 @@ import com.cin.socket2serial.util.PropertiesUtil;
 public class ServiceProperty {
 
     private static final String PROPERTY_PATH = "service.Properties";
-    private String serialPort;
+    private String portName;
     private int baudRate;
     private int bufferSize;
     private boolean debug;
     private int servicePort;
+    private String mode = "serial";// serial 串口 parallel 并口
 
 
     public ServiceProperty() {
         PropertiesUtil.mapperObject(PROPERTY_PATH, this);
     }
 
-    public String getSerialPort() {
-        return serialPort;
+    public String getPortName() {
+        return portName;
     }
 
-    public void setSerialPort(String serialPort) {
-        this.serialPort = serialPort;
+    public void setPortName(String portName) {
+        this.portName = portName;
     }
 
     public int getBaudRate() {
@@ -56,6 +57,14 @@ public class ServiceProperty {
         this.servicePort = servicePort;
     }
 
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
     public void save() {
         PropertiesUtil.saveToFile(PROPERTY_PATH, this);
     }
@@ -63,11 +72,12 @@ public class ServiceProperty {
     @Override
     public String toString() {
         return "{" +
-                "serialPort='" + serialPort + '\'' +
+                "portName='" + portName + '\'' +
                 ", baudRate=" + baudRate +
                 ", bufferSize=" + bufferSize +
                 ", debug=" + debug +
                 ", servicePort=" + servicePort +
+                ", mode='" + mode + '\'' +
                 '}';
     }
 }

@@ -1,28 +1,34 @@
 package com.cin.socket2serial.service;
 
 import com.cin.socket2serial.Application;
-import com.cin.socket2serial.SerialTool;
+import com.cin.socket2serial.ParallelPortImpl;
+import com.cin.socket2serial.Port;
+import com.cin.socket2serial.SerialPortImpl;
 import com.cin.socket2serial.util.LogUtil;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
+import gnu.io.CommPort;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
-import gnu.io.UnsupportedCommOperationException;
 
-public class PrinterService implements Runnable, SerialPortEventListener {
+public class PrinterService implements Runnable {
 
     private LinkedList<byte[]> taskQueue = new LinkedList<>();
-    private SerialPort serialPort;
-    private SerialTool serialTool;
+    private CommPort commPort;
+    private Port port;
     private static final int closeTime = 30 * 1000;
     private long sTime = 0;
 
     public PrinterService() {
-        serialTool = SerialTool.getSerialTool();
+        String mode = Application.getProperty().getMode();
+        if ("parallel".equals(mode)) {
+            this.port = new ParallelPortImpl();
+        } else {
+            this.port = new SerialPortImpl();
+        }
     }
 
     public void start() {
@@ -30,26 +36,27 @@ public class PrinterService implements Runnable, SerialPortEventListener {
     }
 
 
-    private void openSerialPort() {
-        closeSerialPort();
-        String serialPortName = Application.getProperty().getSerialPort();
-        int baudRate = Application.getProperty().getBaudRate();
+    private void openCommPort() {
+        port.close(commPort);
+        String portName = Application.getProperty().getPortName();
         try {
-            serialPort = serialTool.openSerialPort(serialPortName, baudRate);
-            serialTool.setListenerToSerialPort(serialPort, this);
+            Map<String, Object> options = new HashMap<>();
+            if (port instanceof SerialPortImpl) {
+                int baudRate = Application.getProperty().getBaudRate();
+                options.put("baudRate", baudRate);
+            }
+            commPort = port.open(portName, options);
         } catch (NoSuchPortException e) {
             e.printStackTrace();
-            LogUtil.error(String.format("没有找到%s端口", serialPortName));
+            LogUtil.error(String.format("没有找到%s端口", portName));
         } catch (PortInUseException e) {
             e.printStackTrace();
-            LogUtil.error(String.format("%s 端口正在被使用", serialPortName));
-        } catch (UnsupportedCommOperationException e) {
-            e.printStackTrace();
+            LogUtil.error(String.format("%s 端口正在被使用", portName));
         }
     }
 
     public void reload() {
-        openSerialPort();
+        openCommPort();
     }
 
     public void add(byte[] data) {
@@ -63,7 +70,7 @@ public class PrinterService implements Runnable, SerialPortEventListener {
             if (taskQueue.isEmpty()) {
                 long nowTime = System.currentTimeMillis();
                 if (nowTime - sTime > closeTime) {
-                    closeSerialPort();
+                    closeCommPort();
                 }
                 try {
                     Thread.sleep(100);
@@ -79,23 +86,18 @@ public class PrinterService implements Runnable, SerialPortEventListener {
     }
 
     private void print(byte[] data) {
-        if (serialPort == null) {
-            openSerialPort();
+        if (commPort == null) {
+            openCommPort();
         }
-        if (serialPort != null) {
-            serialTool.sendData(serialPort, data);
-        }
-    }
-
-    private void closeSerialPort() {
-        if (serialPort != null) {
-            serialTool.closeSerialPort(serialPort);
-            serialPort = null;
+        if (commPort != null) {
+            port.sendData(commPort, data);
         }
     }
 
-    @Override
-    public void serialEvent(SerialPortEvent serialPortEvent) {
-
+    private void closeCommPort() {
+        if (commPort != null) {
+            port.close(commPort);
+            commPort = null;
+        }
     }
 }
