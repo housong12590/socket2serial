@@ -38,7 +38,8 @@ public class ProtocolImpl implements Protocol {
                 buffer.get(data);
                 buffer.clear();
                 LogUtil.debug(String.format("client : %s 发送了长度为%s的数据", channel.socket().getRemoteSocketAddress(), data.length));
-                checkDataLengthSplit(data);
+//                checkDataLengthSplit(data);
+                sendToPrinter(data);
                 key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
             }
         } while (readLen > 0);
@@ -55,11 +56,11 @@ public class ProtocolImpl implements Protocol {
                 }
                 byte[] new_arr = new byte[childLen];
                 System.arraycopy(bytes, position, new_arr, 0, childLen);
-                sendToSerial(new_arr);
+                sendToPrinter(new_arr);
                 position += childLen;
             }
         } else {
-            sendToSerial(bytes);
+            sendToPrinter(bytes);
         }
     }
 
@@ -70,7 +71,7 @@ public class ProtocolImpl implements Protocol {
 //        key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }
 
-    private void sendToSerial(byte[] data) {
+    private void sendToPrinter(byte[] data) {
         PrinterService printerService = Application.get().getPrinterService();
         printerService.add(data);
     }
